@@ -1,6 +1,7 @@
 import React from 'react';
 import TodoList from './components/TodoList';
 import './App.css';
+import MainFooter from './components/Mainfooter';
 
 function App() {
   return (
@@ -11,9 +12,7 @@ function App() {
           <p>Organize your tasks efficiently</p>
         </header>
         <TodoList />
-        <footer className="app-footer">
-          <p>Click on a task to mark it as completed</p>
-        </footer>
+        <MainFooter />
       </div>
     </div>
   );

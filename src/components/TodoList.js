@@ -5,7 +5,7 @@ import './TodoList.css';
 
 const TodoList = () => {
   const [todos, setTodos] = useState(() => {
-    const savedTodos = localStorage.getItem('todos'); // for userswho have added todos before
+    const savedTodos = localStorage.getItem('todos'); // for users who have added todos before
     // Check if there are saved todos in localStorage
     if (savedTodos) {
       return JSON.parse(savedTodos);
@@ -15,6 +15,7 @@ const TodoList = () => {
   });
   
   const [filter, setFilter] = useState('all');
+  const [sortBy, setSortBy] = useState('createdAt');
   const [todosLeft, setTodosLeft] = useState(0);
 
   useEffect(() => {
@@ -22,8 +23,17 @@ const TodoList = () => {
     setTodosLeft(todos.filter(todo => !todo.isCompleted).length);
   }, [todos]);
 
-  const addTodo = text => {
-    const newTodos = [...todos, { text, isCompleted: false }];
+  const addTodo = (todoData) => {
+    // If todoData is just a string, convert it to object format
+    const newTodo = typeof todoData === 'string' 
+      ? { 
+          text: todoData, 
+          createdAt: new Date().toISOString(),
+          isCompleted: false 
+        }
+      : todoData;
+      
+    const newTodos = [...todos, newTodo];
     setTodos(newTodos);
   };
 
@@ -36,6 +46,12 @@ const TodoList = () => {
   const toggleComplete = index => {
     const newTodos = [...todos];
     newTodos[index].isCompleted = !newTodos[index].isCompleted;
+    // If completed, set completedAt timestamp
+    if (newTodos[index].isCompleted) {
+      newTodos[index].completedAt = new Date().toISOString();
+    } else {
+      newTodos[index].completedAt = null;
+    }
     setTodos(newTodos);
   };
 
@@ -43,49 +59,92 @@ const TodoList = () => {
     setTodos(todos.filter(todo => !todo.isCompleted));
   };
 
+  // Filter todos based on active filter
   const filteredTodos = todos.filter(todo => {
     if (filter === 'active') return !todo.isCompleted;
     if (filter === 'completed') return todo.isCompleted;
     return true;
   });
-
+  
+  // Sort todos
+  const sortedTodos = [...filteredTodos].sort((a, b) => {
+    // Priority sorting (high → medium → low)
+    if (sortBy === 'priority') {
+      const priorityOrder = { high: 1, medium: 2, low: 3, undefined: 4 };
+      return (priorityOrder[a.priority] || 4) - (priorityOrder[b.priority] || 4);
+    }
+    
+    // Due date sorting
+    if (sortBy === 'dueDate') {
+      if (!a.dueDate) return 1;
+      if (!b.dueDate) return -1;
+      return new Date(a.dueDate) - new Date(b.dueDate);
+    }
+    
+    // Default: sort by creation date (newest first)
+    const dateA = a.createdAt ? new Date(a.createdAt) : new Date(0);
+    const dateB = b.createdAt ? new Date(b.createdAt) : new Date(0);
+    return dateB - dateA;
+  });
   return (
     <div className="todo-container">
       <TodoForm addTodo={addTodo} />
       
       {todos.length > 0 && (
         <>
-          <div className="todo-filters">
-            <button 
-              className={`filter-btn ${filter === 'all' ? 'active' : ''}`}
-              onClick={() => setFilter('all')}
-            >
-              All
-            </button>
-            <button 
-              className={`filter-btn ${filter === 'active' ? 'active' : ''}`}
-              onClick={() => setFilter('active')}
-            >
-              Active
-            </button>
-            <button 
-              className={`filter-btn ${filter === 'completed' ? 'active' : ''}`}
-              onClick={() => setFilter('completed')}
-            >
-              Completed
-            </button>
+          <div className="todo-controls">
+            <div className="todo-filters">
+              <button 
+                className={`filter-btn ${filter === 'all' ? 'active' : ''}`}
+                onClick={() => setFilter('all')}
+              >
+                All
+              </button>
+              <button 
+                className={`filter-btn ${filter === 'active' ? 'active' : ''}`}
+                onClick={() => setFilter('active')}
+              >
+                Active
+              </button>
+              <button 
+                className={`filter-btn ${filter === 'completed' ? 'active' : ''}`}
+                onClick={() => setFilter('completed')}
+              >
+                Completed
+              </button>
+            </div>
+            
+            <div className="sort-dropdown">
+              <select 
+                value={sortBy}
+                onChange={(e) => setSortBy(e.target.value)}
+                className="sort-select"
+                aria-label="Sort tasks"
+              >
+                <option value="createdAt">Date Created</option>
+                <option value="dueDate">Due Date</option>
+                <option value="priority">Priority</option>
+              </select>
+            </div>
           </div>
 
           <ul className="todo-list">
-            {filteredTodos.map((todo, index) => (
-              <TodoItem
-                key={index}
-                index={index}
-                todo={todo}
-                removeTodo={removeTodo}
-                toggleComplete={toggleComplete}
-              />
-            ))}
+            {sortedTodos.map((todo, index) => {
+              // Find the original index in the todos array
+              const originalIndex = todos.findIndex(t => 
+                t.createdAt === todo.createdAt && t.text === todo.text
+              );
+              
+              return (
+                <TodoItem
+                  key={todo.createdAt ? todo.createdAt + todo.text : index}
+                  index={originalIndex !== -1 ? originalIndex : index}
+                  todo={todo}
+                  removeTodo={removeTodo}
+                  toggleComplete={toggleComplete}
+                />
+              );
+            })}
           </ul>
 
           <div className="todo-summary">

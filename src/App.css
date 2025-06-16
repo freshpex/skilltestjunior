@@ -56,10 +56,81 @@ body {
 }
 
 .app-footer {
-  margin-top: 2rem;
+  margin-top: 2.5rem;
+  width: 100%;
+  color: #4b5563;
+}
+
+.app-footer h2 {
   text-align: center;
-  color: #6b7280;
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin-bottom: 1.5rem;
+  color: #1f2937;
+  position: relative;
+  padding-bottom: 0.75rem;
+}
+
+.app-footer h2:after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 60px;
+  height: 3px;
+  background: linear-gradient(90deg, #6366f1 0%, #8b5cf6 100%);
+  border-radius: 3px;
+}
+
+.tips-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 1rem;
+  width: 100%;
+}
+
+.tip-card {
+  display: flex;
+  background-color: white;
+  border-radius: 12px;
+  padding: 1rem;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+  transition: all 0.3s ease;
+}
+
+.tip-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
+}
+
+.tip-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 48px;
+  height: 48px;
+  border-radius: 12px;
+  margin-right: 1rem;
+  background: linear-gradient(135deg, rgba(99, 102, 241, 0.1) 0%, rgba(139, 92, 246, 0.1) 100%);
+  color: #6366f1;
+}
+
+.tip-content {
+  flex: 1;
+}
+
+.tip-content h3 {
+  font-size: 1rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+  color: #1f2937;
+}
+
+.tip-content p {
   font-size: 0.875rem;
+  color: #6b7280;
+  line-height: 1.4;
 }
 
 @media screen and (max-width: 600px) {
@@ -71,5 +142,23 @@ body {
   
   .app-header h1 {
     font-size: 1.75rem;
+  }
+  
+  .tips-container {
+    grid-template-columns: 1fr;
+  }
+  
+  .tip-card {
+    padding: 0.75rem;
+  }
+  
+  .tip-icon {
+    min-width: 40px;
+    height: 40px;
+  }
+  
+  .app-footer h2 {
+    font-size: 1.1rem;
+    margin-bottom: 1rem;
   }
 }

@@ -4,14 +4,16 @@
   gap: 0.5rem;
   width: 100%;
   max-width: 500px;
+  position: relative;
 }
 
 .todo-input {
   flex-grow: 1;
   padding: 1rem;
+  padding-right: 100px;
   font-size: 1rem;
   border: none;
-  border-radius: 8px;
+  border-radius: 12px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   background: #f8f9fa;
   transition: all 0.3s ease;
@@ -23,13 +25,23 @@
   background: #fff;
 }
 
+.todo-buttons {
+  position: absolute;
+  right: 8px;
+  top: 50%;
+  transform: translateY(-50%);
+  display: flex;
+  gap: 0.5rem;
+}
+
 .todo-button {
   background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
   color: white;
   border: none;
   border-radius: 8px;
   padding: 0.5rem;
-  width: 50px;
+  width: 40px;
+  height: 40px;
   cursor: pointer;
   box-shadow: 0 2px 8px rgba(99, 102, 241, 0.3);
   transition: all 0.3s ease;
@@ -38,23 +50,40 @@
   justify-content: center;
 }
 
+.todo-button-schedule {
+  background: white;
+  color: #6366f1;
+  border: 1px solid rgba(99, 102, 241, 0.3);
+  box-shadow: none;
+}
+
 .todo-button:hover {
   transform: translateY(-2px);
   box-shadow: 0 4px 12px rgba(99, 102, 241, 0.4);
 }
 
+.todo-button-schedule:hover {
+  background: rgba(99, 102, 241, 0.05);
+  box-shadow: 0 2px 8px rgba(99, 102, 241, 0.2);
+}
+
 @media screen and (max-width: 600px) {
   .todo-form {
-    flex-direction: column;
     max-width: 90%;
+    position: relative;
   }
   
   .todo-input {
     width: 100%;
+    padding-right: 90px;
+  }
+  
+  .todo-buttons {
+    right: 6px;
   }
   
   .todo-button {
-    width: 100%;
-    margin-top: 0.5rem;
+    width: 36px;
+    height: 36px;
   }
 }
